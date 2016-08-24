@@ -21,6 +21,11 @@ class RoundRobinSelector implements SelectorInterface
     private $current = 0;
 
     /**
+     * @var int
+     */
+    private $next = 0;
+
+    /**
      * Select the next connection in the sequence
      *
      * @param  ConnectionInterface[] $connections an array of ConnectionInterface instances to choose from
@@ -29,8 +34,9 @@ class RoundRobinSelector implements SelectorInterface
      */
     public function select($connections)
     {
-        $this->current += 1;
+        $this->current = $this->next;
+        $this->next = ($this->current + 1) % count($connections);
 
-        return $connections[$this->current % count($connections)];
+        return $connections[$this->current];
     }
 }
